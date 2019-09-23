@@ -11,6 +11,10 @@ namespace DoToo.Repositories
     {
         private SQLiteAsyncConnection connection;
 
+        public event EventHandler<TodoItem> OnItemAdded;
+        public event EventHandler<TodoItem> OnItemUpdated;
+        public event EventHandler<TodoItem> OnItemDeleted;
+
         private async Task CreateConnection()
         {
             if (connection != null)
@@ -29,10 +33,6 @@ namespace DoToo.Repositories
                 await connection.InsertAsync(new TodoItem() { Title = "Welcome to DoToo" });
             }
         }
-
-        public event EventHandler<TodoItem> OnItemAdded;
-        public event EventHandler<TodoItem> OnItemUpdated;
-        public event EventHandler<TodoItem> OnItemDeleted;
 
         public async Task<List<TodoItem>> GetItems()
         {

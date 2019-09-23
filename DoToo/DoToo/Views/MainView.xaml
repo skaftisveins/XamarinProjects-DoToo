@@ -9,11 +9,13 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="Do Too!"
     mc:Ignorable="d">
+
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:StatusColorConverter x:Key="statusColorConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
+
     <ContentPage.ToolbarItems>
         <ToolbarItem Command="{Binding AddItem}" Text="Add" />
     </ContentPage.ToolbarItems>
@@ -24,23 +26,44 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <Button Text="Toggle filter" />
+        <Button
+            BackgroundColor="{Binding ShowAll, Converter={StaticResource statusColorConverter}}"
+            Command="{Binding ToggleFilter}"
+            Style="{StaticResource FilterButton}"
+            Text="{Binding FilterText, StringFormat='Filter: {0}'}"
+            TextColor="Black">
+
+            <Button.Triggers>
+                <DataTrigger
+                    Binding="{Binding ShowAll}"
+                    TargetType="Button"
+                    Value="True">
+                    <Setter Property="TextColor" Value="White" />
+                </DataTrigger>
+            </Button.Triggers>
+
+        </Button>
 
         <ListView
+            x:Name="ItemsListView"
             Grid.Row="1"
             ItemsSource="{Binding Items}"
-            RowHeight="70">
+            RowHeight="70"
+            SelectedItem="{Binding SelectedItem}">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <ViewCell>
+                        <ViewCell.ContextActions>
+                            <MenuItem Command="{Binding ToggleCompleted}" Text="{Binding StatusText}" />
+                        </ViewCell.ContextActions>
                         <Grid Padding="15,8">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="10" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
-                            <!--<BoxView Grid.RowSpan="2" BackgroundColor="{Binding Item.Completed, Converter={StaticResource statusColorConverter}}" />-->
-                            <BoxView Grid.RowSpan="2" BackgroundColor="{Binding Item.Completed}" />
+                            <BoxView Grid.RowSpan="2" BackgroundColor="{Binding Item.Completed, Converter={StaticResource statusColorConverter}}" />
+                            <!--<BoxView Grid.RowSpan="2" BackgroundColor="{Binding Item.Completed}" />-->
                             <Label
                                 Grid.Column="1"
                                 FontSize="Large"
@@ -49,14 +72,15 @@
                                 Grid.Row="1"
                                 Grid.Column="1"
                                 FontSize="Micro"
-                                Text="{Binding Item.Due}" />
+                                Text="{Binding Item.Due, StringFormat='{0:dd. MMMM, yyyy}'}" />
                             <Label
                                 Grid.Row="1"
                                 Grid.Column="1"
                                 FontSize="Micro"
                                 HorizontalTextAlignment="End"
                                 IsVisible="{Binding Item.Completed}"
-                                Text="Completed" />
+                                Text="Completed"
+                                TextColor="{StaticResource CompletedColor}" />
                         </Grid>
                     </ViewCell>
                 </DataTemplate>
