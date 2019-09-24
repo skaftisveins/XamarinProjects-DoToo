@@ -87,7 +87,7 @@ namespace DoToo.ViewModels
 
             var itemView = Resolver.Resolve<ItemView>();
             var vm = itemView.BindingContext as ItemViewModel;
-            var Item = item.Item;
+            vm.Item = item.Item;
 
             await Navigation.PushAsync(itemView);
         }
